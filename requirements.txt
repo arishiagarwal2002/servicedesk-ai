@@ -1,0 +1,9 @@
+fastapi>=0.115
+uvicorn[standard]>=0.32
+pydantic>=2.9
+psycopg[binary]>=3.2
+pgvector>=0.3
+scikit-learn>=1.5
+pyyaml>=6.0
+streamlit>=1.39
+pytest>=8.3

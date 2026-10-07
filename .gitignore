@@ -1,0 +1,8 @@
+.env
+*.pyc
+__pycache__/
+.venv/
+data/company/
+data/exports/
+*.dump
+.DS_Store

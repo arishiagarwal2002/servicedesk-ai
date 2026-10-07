@@ -1,0 +1,81 @@
+# Version 1 taxonomy.
+#
+# Four categories, each mapped to one provisional queue. The mapping is
+# configuration, not model output: the classifier predicts a category, and the
+# category resolves to a team through this file. A model is never allowed to
+# emit a queue name directly.
+#
+# Every name here is fictional and provisional. Replace with Keptra's real
+# queues only after an engineer has confirmed them — until then, nothing in
+# this file should be presented as reflecting how Keptra works.
+
+version: provisional-v1
+tenant_id: demo-tenant
+
+categories:
+  - id: account_access
+    label: Account access
+    team: Identity Support
+    description: >
+      Sign-in failures, account lockouts, password reset requests, MFA
+      enrolment and recovery problems.
+    typical_phrases:
+      - cannot sign in
+      - account locked
+      - MFA code not arriving
+
+  - id: email
+    label: Email
+    team: Messaging Support
+    description: >
+      Mailbox access, delivery failures, bounced messages, distribution list
+      and shared mailbox permission issues.
+    typical_phrases:
+      - email not sending
+      - bounce message
+      - cannot open shared mailbox
+
+  - id: vpn_connectivity
+    label: VPN / connectivity
+    team: Network Support
+    description: >
+      Remote-access failures, VPN client errors, dropped tunnels and
+      site-to-site connectivity problems.
+    typical_phrases:
+      - VPN will not connect
+      - keeps disconnecting
+      - cannot reach internal site remotely
+
+  - id: software_installation
+    label: Software installation
+    team: Endpoint Support
+    description: >
+      Requests for approved applications, installation failures, licence
+      assignment and version upgrade requests.
+    typical_phrases:
+      - please install
+      - installation failed
+      - need a licence for
+
+# Tickets that match none of the four, or several at once, are routed to a
+# human rather than forced into the closest category. Coverage is reported
+# alongside accuracy precisely so that this behaviour is visible.
+out_of_scope_queue: Service Desk Triage
+
+# Priority is derived from this matrix using facts the reporter supplied.
+# It is never inferred from the emotional tone of the ticket text: "URGENT!!!"
+# is not evidence of business impact.
+priority_matrix:
+  required_facts: [users_affected, business_hours]
+  rules:
+    - when: { users_affected_gte: 50 }
+      priority: P1
+    - when: { users_affected_gte: 10, business_hours: true }
+      priority: P2
+    - when: { users_affected_gte: 2 }
+      priority: P3
+    - when: { users_affected_gte: 1 }
+      priority: P4
+  # If the required facts are missing, the system asks for them rather than
+  # guessing a priority.
+  on_missing_facts: needs_information
